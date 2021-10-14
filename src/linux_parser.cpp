@@ -11,7 +11,7 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// DONE: An example of how to read data from the filesystem
+// Parse OS
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
@@ -34,7 +34,7 @@ string LinuxParser::OperatingSystem() {
   return value;
 }
 
-// DONE: An example of how to read data from the filesystem
+// Parse kernel info
 string LinuxParser::Kernel() {
   string os, kernel, version;
   string line;
@@ -67,7 +67,7 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
+// Read and return memory utilization in percent format
 float LinuxParser::MemoryUtilization() { 
   string mem, vale, size;
   string line;
@@ -94,8 +94,21 @@ float LinuxParser::MemoryUtilization() {
   return MemUtil / MemTotal;
 }
 
-// TODO: Read and return the system uptime
-long LinuxParser::UpTime() { return 0; }
+// Function to parse the system uptime
+long LinuxParser::UpTime() { 
+  string time, suspend;
+  string line;
+  long upTime;
+  std::ifstream stream(kProcDirectory + kUptimeFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    linestream >> time >> suspend;
+    std::stringstream number(time);
+    number >> upTime;
+  }
+  return upTime;
+}
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
