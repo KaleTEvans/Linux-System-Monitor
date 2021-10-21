@@ -16,7 +16,13 @@ Process::Process(int pid) : _pid(pid) {
     long uptime = LinuxParser::UpTime() - LinuxParser::UpTime(_pid);
     long totalTime = LinuxParser::ActiveJiffies(_pid);
 
-    _CpuUtilization = float(uptime) / float(totalTime);
+    // using a try catch block here to get rid of 0s and infinite values
+    try {
+        _CpuUtilization = float(totalTime) / float(uptime);
+
+    } catch (...) {
+        _CpuUtilization = 0;
+    }
 }
 
 // Return this process's ID
