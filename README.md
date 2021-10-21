@@ -4,7 +4,7 @@
 
 ## Description
 This is a C++ program designed to provide system statistics for a linux machine to the terminal, completed with starter code from Udacity's C++ course.
-If you are a Windows user and wish to recreate this project, I would suggest using a Linux Virtual Machine. The Machine I used was the Oracle VM VirtualBox with ubuntu,  
+If you are a Windows user and wish to recreate this project, I would suggest using a Linux Virtual Machine. The machine I used was the Oracle VM VirtualBox with Ubuntu,  
 which can be downloaded [here](https://www.oracle.com/virtualization/solutions/try-oracle-vm-virtualbox/?source=:ad:pas:go:dg:a_nas:71700000079711823-58700006707759345-p60691657643:RC_WWMK200609P00103C0001:&SC=:ad:pas:go:dg:a_nas::RC_WWMK200609P00103C0001:&gclid=CjwKCAjwn8SLBhAyEiwAHNTJbWLRRYow8w1X-eVC9k7tkcn_YDTtQt9UhaIET7fYU4niVVu_hl1ukRoCKAEQAvD_BwE&gclsrc=aw.ds)
 
 ## ncurses
