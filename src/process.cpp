@@ -12,12 +12,8 @@ using std::to_string;
 using std::vector;
 
 Process::Process(int pid) : _pid(pid) {
-    _command = LinuxParser::Command(_pid);
-    _ram = std::stol(LinuxParser::Ram(_pid));
-    _user = LinuxParser::User(_pid);
-    _uptime = LinuxParser::UpTime(_pid);
 
-    long uptime = LinuxParser::UpTime() - _uptime;
+    long uptime = LinuxParser::UpTime() - LinuxParser::UpTime(_pid);
     long totalTime = LinuxParser::ActiveJiffies(_pid);
 
     _CpuUtilization = float(uptime) / float(totalTime);
@@ -27,19 +23,19 @@ Process::Process(int pid) : _pid(pid) {
 int Process::Pid() { return _pid; }
 
 // Return this process's CPU utilization
-float Process::CpuUtilization() { return _CpuUtilization; }
+float Process::CpuUtilization() const { return _CpuUtilization; }
 
 // Return the command that generated this process
-string Process::Command() { return _command; }
+string Process::Command() { return LinuxParser::Command(_pid); }
 
 // Return this process's memory utilization
-string Process::Ram() { return _ram; }
+string Process::Ram() { return LinuxParser::Ram(_pid); }
 
 // Return the user (name) that generated this process
-string Process::User() { return _user; }
+string Process::User() { return LinuxParser::User(_pid); }
 
 // Return the age of this process (in seconds)
-long int Process::UpTime() { return _uptime; }
+long int Process::UpTime() { return LinuxParser::UpTime(_pid); }
 
-//  Overload the "less than" comparison operator for Process objects
+// Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { return CpuUtilization() < a.CpuUtilization(); }
