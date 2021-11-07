@@ -244,7 +244,7 @@ string LinuxParser::Ram(int pid) {
     while(std::getline(stream, line)) {
       std::istringstream linestream(line);
       linestream >> key;
-      if (key == "VmSize:") {
+      if (key == "VmRSS:") { // using VmRSS instead of VmSize to get exact physical memory being used rather than virtual memory
         linestream >> memoryUsage;
         ramUsed = std::to_string(memoryUsage / 1000);
       } 

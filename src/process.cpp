@@ -32,7 +32,15 @@ int Process::Pid() { return _pid; }
 float Process::CpuUtilization() const { return _CpuUtilization; }
 
 // Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(_pid); }
+string Process::Command() {
+    string command = LinuxParser::Command(_pid);
+
+    if (command.size() > 50) {
+        return command.substr(0, 50) + "...";
+    } 
+
+    return command;
+}
 
 // Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(_pid); }
@@ -41,7 +49,7 @@ string Process::Ram() { return LinuxParser::Ram(_pid); }
 string Process::User() { return LinuxParser::User(_pid); }
 
 // Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(_pid); }
+long int Process::UpTime() { return LinuxParser::UpTime() - LinuxParser::UpTime(_pid); }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { return CpuUtilization() < a.CpuUtilization(); }
