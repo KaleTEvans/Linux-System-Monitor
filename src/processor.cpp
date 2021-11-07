@@ -7,7 +7,6 @@
 float Processor::Utilization() { 
     long TotalUse = GetTotal();
     long Idle = GetIdle();
-    long NonIdle = GetNonIdle();
 
     float utilization = (float(TotalUse) - float(Idle)) / float(TotalUse);
     return utilization;

@@ -12,6 +12,40 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+// Helper Functions
+template <typename T>
+T findValueByKey(std::string const &keyFilter, std::string const &filename) {
+  std::string line, key;
+  T value;
+
+  std::ifstream stream(LinuxParser::kProcDirectory + filename);
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        if (key == keyFilter) {
+          return value;
+        }
+      }
+    }
+  }
+  return value;
+};
+
+template <typename T>
+T getValueOfFile(std::string const &filename) {
+  std::string line;
+  T value;
+
+  std::ifstream stream(LinuxParser::kProcDirectory + filename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    linestream >> value;
+  }
+  return value;
+};
+
 // Parse OS
 string LinuxParser::OperatingSystem() {
   string line;
@@ -60,7 +94,7 @@ vector<int> LinuxParser::Pids() {
       string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename);
-        pids.push_back(pid);
+        pids.emplace_back(pid);
       }
     }
   }
@@ -70,44 +104,20 @@ vector<int> LinuxParser::Pids() {
 
 // Read and return memory utilization in percent format
 float LinuxParser::MemoryUtilization() { 
-  string mem, value, size;
-  string line;
-  float MemTotal;
-  float MemFree;
-  float MemUtil;
-  std::ifstream stream(kProcDirectory + kMeminfoFilename);
-  if (stream.is_open()) {
-    while(std::getline(stream, line)) {
-      std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream lineStream(line);
-      while(lineStream >> mem >> value >> size) {
-        std::stringstream number(value);
-        if (mem == "MemTotal") {
-          number >> MemTotal;
-        }
-        if (mem == "MemFree") {
-          number >> MemFree;
-        }
-      }
-    }
-  }
-  MemUtil = MemTotal - MemFree;
-  return MemUtil / MemTotal;
+  string memTotal = "MemTotal:";
+  string memFree = "MemFree:";
+  float Total = findValueByKey<float>(memTotal, kMeminfoFilename);// "/proc/memInfo"
+  float Free = findValueByKey<float>(memFree, kMeminfoFilename);
+  return (Total - Free) / Total;
 }
 
 // Function to parse the system uptime
 long LinuxParser::UpTime() { 
-  string time, suspend;
   string line;
   long upTime;
-  std::ifstream stream(kProcDirectory + kUptimeFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    linestream >> time >> suspend;
-    std::stringstream number(time);
-    number >> upTime;
-  }
+
+  string time = getValueOfFile<string>(kUptimeFilename);
+  upTime = std::stol(time);
   return upTime;
 }
 
@@ -126,7 +136,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     std::istringstream linestream(line);
 
     while(linestream >> time) {
-      timeArr.push_back(time);
+      timeArr.emplace_back(time);
     }
   }
 
@@ -159,6 +169,7 @@ long LinuxParser::IdleJiffies() {
 // Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
   string line, cpu, user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
+  vector<string> jiffies
   std::ifstream stream(kProcDirectory + kStatFilename);
 
   if (stream.is_open()) {
@@ -167,9 +178,9 @@ vector<string> LinuxParser::CpuUtilization() {
 
     linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
 
-    vector<string> jiffies{user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice};
-    return jiffies;
+    jiffies = {user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice};
   }
+  return jiffies;
 }
 
 // Read and return the total number of processes
