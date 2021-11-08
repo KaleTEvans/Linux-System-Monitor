@@ -169,7 +169,7 @@ long LinuxParser::IdleJiffies() {
 // Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
   string line, cpu, user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
-  vector<string> jiffies
+  vector<string> jiffies;
   std::ifstream stream(kProcDirectory + kStatFilename);
 
   if (stream.is_open()) {
