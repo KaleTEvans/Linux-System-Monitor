@@ -94,7 +94,7 @@ vector<int> LinuxParser::Pids() {
       string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename);
-        pids.emplace_back(pid);
+        pids.push_back(pid);
       }
     }
   }
@@ -136,7 +136,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     std::istringstream linestream(line);
 
     while(linestream >> time) {
-      timeArr.emplace_back(time);
+      timeArr.push_back(time);
     }
   }
 
@@ -244,7 +244,7 @@ string LinuxParser::Ram(int pid) {
     while(std::getline(stream, line)) {
       std::istringstream linestream(line);
       linestream >> key;
-      if (key == "VmRSS:") { // using VmRSS instead of VmSize to get exact physical memory being used rather than virtual memory
+      if (key == "VmSize:") {
         linestream >> memoryUsage;
         ramUsed = std::to_string(memoryUsage / 1000);
       } 
