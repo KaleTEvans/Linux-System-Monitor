@@ -24,7 +24,9 @@ vector<Process>& System::Processes() {
 
     for (int i : pids) {
         if (!LinuxParser::Ram(pids[i]).empty()) {
-            processes_.emplace_back(process);
+            Process newProcess(pids[i]);
+            
+            processes_.emplace_back(newProcess);
         }
     }
 
